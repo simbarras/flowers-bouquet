@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ton bouquet</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="/favicon.svg" />
+</head>
+<body>
+<div id="bouquet-container">
+    <div class="container">
+        <img src="bouquet.webp" alt="Bouquet" class="bouquet">
+        <div class="ribbon">Simon</div>
+        <div class="message">Have a great day</div>
+    </div>
+</div>
+<div class="container" id="admin-container" hidden="hidden">
+    <!-- Admin form -->
+    <form onsubmit="createBouquet(); return false;">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+        <label for="message">Message:</label>
+        <input type="text" id="message" name="message" required>
+        <input type="submit" value="Create bouquet">
+        <label for="result">Result:</label>
+        <input type="text" id="result" name="result" disabled>
+    </form>
+</div>
+</body>
+<script>
+    function decodeFromUrl() {
+        try {
+            // Get data from the URL
+            const startOfOurData = window.location.href.indexOf("#");
+            const data = window.location.href.substring(startOfOurData + 1);
+            console.log(data);
+            // Decode from Base64
+            const decodedData = atob(data);
+            console.log(decodedData);
+            // Split the data
+            const splitData = decodedData.split(";;;");
+            const name = splitData[0];
+            const message = splitData[1];
+            console.log(name);
+            console.log(message);
+            return {"name": name, "message": message};
+        } catch (e) {
+            return undefined;
+        }
+    }
+
+    function selectView(showBouquet) {
+        console.log("Selecting view: " + showBouquet);
+        const bouquetContainer = document.getElementById("bouquet-container");
+        bouquetContainer.hidden = !showBouquet;
+        const adminContainer = document.getElementById("admin-container");
+        adminContainer.hidden = showBouquet;
+
+    }
+
+    function updateBouquet(gift) {
+        // Update the bouquet
+        const ribbon = document.querySelector(".ribbon");
+        ribbon.innerText = gift.name;
+        const message = document.querySelector(".message");
+        message.innerText = gift.message;
+        const title = document.querySelector("title");
+        title.innerText = gift.name + " !";
+    }
+
+    function createBouquet() {
+        // Get the data from the form
+        const name = document.getElementById("name").value;
+        const message = document.getElementById("message").value;
+        // Encode the data
+        const encodedData = btoa(name + ";;;" + message);
+        // Update the URL
+        const result = window.location.href.split("#")[0] + "#" + encodedData;
+        // Update the bouquet
+        const resultField = document.getElementById("result");
+        resultField.value = result;
+    }
+
+    const gift = decodeFromUrl();
+    const showBouquet = gift !== undefined;
+    selectView(showBouquet);
+    if (showBouquet) {
+        updateBouquet(gift);
+    }
+</script>
+</html>
