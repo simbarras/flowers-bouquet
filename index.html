@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ton bouquet</title>
-    <link rel="icon" href="favicon.svg" />
+    <title>Pour toi!</title>
+    <link rel="icon" href="favicon.svg"/>
 </head>
 <body>
 <div id="bouquet-container">
@@ -37,16 +37,14 @@
             // Get data from the URL
             const startOfOurData = window.location.href.indexOf("#");
             const data = window.location.href.substring(startOfOurData + 1);
-            console.log(data);
             // Decode from Base64
             const decodedData = atob(data);
-            console.log(decodedData);
             // Split the data
             const splitData = decodedData.split(";;;");
             const name = splitData[0];
             const message = splitData[1];
-            console.log(name);
-            console.log(message);
+            console.log("Decoded name: " + name);
+            console.log("Decoded message: " + message);
             return {"name": name, "message": message};
         } catch (e) {
             return undefined;
@@ -90,14 +88,17 @@
     function shareBouquet() {
 
         if (navigator.share) {
+            const msg = "Hey, j'ai quelques choses pour toi !";
             navigator.share({
-                title: "Hey, j'ai quelques choses pour toi !",
+                title: msg,
+                text: msg,
                 url: buildBouquet()
             })
                 .then(() => console.log("Content shared successfully"))
                 .catch((err) => console.error("Error sharing content: ", err));
         } else {
             alert("Sharing is not supported in this browser. Please copy the URL manually.");
+            updateBouquet();
         }
     }
 
@@ -117,13 +118,21 @@
         align-items: center;
         flex-direction: column;
         height: 100vh;
-        background-color: #ffe6f2;
+        background-color: hsl(209, 14%, 29%);
         font-family: 'Cursive', Arial, sans-serif;
     }
+
     .container {
         position: relative;
         text-align: center;
     }
+
+    .bouquet {
+        width: 90%;
+        max-width: 600px;
+        border-radius: 10px;
+    }
+
     .ribbon {
         position: absolute;
         top: 50%;
@@ -137,20 +146,14 @@
         font-family: 'Brush Script MT', cursive;
         z-index: 1;
     }
-    .bouquet {
-        display: block;
-        max-width: 100%;
-        height: auto;
-        border: 5px solid #ffb3b3;
-        border-radius: 15px;
-        z-index: 0;
-    }
+
     .message {
         margin-top: 20px;
         font-size: 20px;
         color: #ff4d4d;
         font-family: 'Brush Script MT', cursive;
     }
+
     .vertical-form {
         display: flex;
         flex-direction: column;
