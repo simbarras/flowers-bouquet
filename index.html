@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ton bouquet</title>
-    <link rel="stylesheet" href="style.css">
     <link rel="icon" href="favicon.svg" />
 </head>
 <body>
@@ -17,14 +16,18 @@
 </div>
 <div class="container" id="admin-container" hidden="hidden">
     <!-- Admin form -->
-    <form onsubmit="createBouquet(); return false;">
+    <form class="vertical-form" onchange="updateViewBouquetBuild()">
         <label for="name">Name:</label>
         <input type="text" id="name" name="name" required>
+
         <label for="message">Message:</label>
-        <input type="text" id="message" name="message" required>
-        <input type="submit" value="Create bouquet">
+        <textarea id="message" name="message" rows="4" required></textarea>
+
         <label for="result">Result:</label>
-        <input type="text" id="result" name="result" disabled>
+        <div class="result-container">
+            <input type="text" id="result" name="result" readonly>
+            <button type="button" id="share-button" onclick="shareBouquet()">Share</button>
+        </div>
     </form>
 </div>
 </body>
@@ -69,17 +72,33 @@
         title.innerText = gift.name + " !";
     }
 
-    function createBouquet() {
+    function buildBouquet() {
         // Get the data from the form
         const name = document.getElementById("name").value;
         const message = document.getElementById("message").value;
         // Encode the data
         const encodedData = btoa(name + ";;;" + message);
         // Update the URL
-        const result = window.location.href.split("#")[0] + "#" + encodedData;
-        // Update the bouquet
+        return window.location.href.split("#")[0] + "#" + encodedData;
+    }
+
+    function updateViewBouquetBuild() {
         const resultField = document.getElementById("result");
-        resultField.value = result;
+        resultField.value = buildBouquet();
+    }
+
+    function shareBouquet() {
+
+        if (navigator.share) {
+            navigator.share({
+                title: "Hey, j'ai quelques choses pour toi !",
+                url: buildBouquet()
+            })
+                .then(() => console.log("Content shared successfully"))
+                .catch((err) => console.error("Error sharing content: ", err));
+        } else {
+            alert("Sharing is not supported in this browser. Please copy the URL manually.");
+        }
     }
 
     const gift = decodeFromUrl();
@@ -89,4 +108,103 @@
         updateBouquet(gift);
     }
 </script>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        height: 100vh;
+        background-color: #ffe6f2;
+        font-family: 'Cursive', Arial, sans-serif;
+    }
+    .container {
+        position: relative;
+        text-align: center;
+    }
+    .ribbon {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #ff9999;
+        padding: 10px 30px;
+        border-radius: 10px;
+        color: white;
+        font-size: 24px;
+        font-family: 'Brush Script MT', cursive;
+        z-index: 1;
+    }
+    .bouquet {
+        display: block;
+        max-width: 100%;
+        height: auto;
+        border: 5px solid #ffb3b3;
+        border-radius: 15px;
+        z-index: 0;
+    }
+    .message {
+        margin-top: 20px;
+        font-size: 20px;
+        color: #ff4d4d;
+        font-family: 'Brush Script MT', cursive;
+    }
+    .vertical-form {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        width: 90%; /* Use 90% width for smaller screens */
+        margin: 0 auto;
+        gap: 15px;
+    }
+
+    .vertical-form label {
+        font-size: 16px;
+        color: #333;
+    }
+
+    .vertical-form input,
+    .vertical-form textarea {
+        width: 100%;
+        padding: 10px;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+    }
+
+    .vertical-form textarea {
+        resize: both; /* Allows both horizontal and vertical resizing */
+    }
+
+    .vertical-form input[readonly] {
+        background-color: #f9f9f9;
+    }
+
+    .result-container {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        gap: 10px; /* Adds spacing between the input and the button */
+    }
+
+    .result-container input[type="text"] {
+        flex: 1; /* Makes the input field take the remaining available space */
+    }
+
+    #share-button {
+        padding: 8px 15px;
+        font-size: 14px;
+        color: white;
+        background-color: #4CAF50; /* Green color */
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        white-space: nowrap; /* Ensures the button text doesn't wrap */
+    }
+
+</style>
 </html>
