@@ -134,24 +134,36 @@
     }
 
     .ribbon {
-        position: absolute;
+        position: relative;
+        font-size: 28px;
+        font-weight: bold;
+        color: white;
         top: 50%;
         left: 50%;
-        transform: translate(-50%, -50%);
-        background-color: #ff9999;
-        padding: 10px 30px;
-        border-radius: 10px;
-        color: white;
-        font-size: 24px;
-        font-family: 'Brush Script MT', cursive;
-        z-index: 1;
+        transform: translate(-50%, -250%);
+    }
+
+    .ribbon {
+        --s: 1.8em; /* the ribbon size */
+        --d: .8em; /* the depth */
+        --c: .8em; /* the cutout part */
+
+        padding: 0 calc(var(--s) + .5em) var(--d);
+        line-height: 1.8;
+        background: conic-gradient(at left var(--s) bottom var(--d),
+        #0000 25%, #0008 0 37.5%, #0004 0) 0   /50% 100% no-repeat,
+        conic-gradient(at right var(--s) bottom var(--d),
+                #0004 62.5%, #0008 0 75%, #0000 0) 100%/50% 100% no-repeat;
+        clip-path: polygon(0 var(--d), var(--s) var(--d), var(--s) 0, calc(100% - var(--s)) 0, calc(100% - var(--s)) var(--d), 100% var(--d), calc(100% - var(--c)) calc(50% + var(--d) / 2), 100% 100%, calc(100% - var(--s) - var(--d)) 100%, calc(100% - var(--s) - var(--d)) calc(100% - var(--d)), calc(var(--s) + var(--d)) calc(100% - var(--d)), calc(var(--s) + var(--d)) 100%, 0 100%, var(--c) calc(50% + var(--d) / 2));
+        background-color: hsl(7, 35%, 75%); /* the main color */
+        width: fit-content;
     }
 
     .message {
-        margin-top: 20px;
         font-size: 20px;
-        color: #ff4d4d;
+        color: #ccc;
         font-family: 'Brush Script MT', cursive;
+        transform: translate(0%, -425%);
     }
 
     .vertical-form {
@@ -165,7 +177,7 @@
 
     .vertical-form label {
         font-size: 16px;
-        color: #333;
+        color: #ccc;
     }
 
     .vertical-form input,
